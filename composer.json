@@ -12,6 +12,7 @@
         "fruitcake/laravel-cors": "^2.0",
         "laravel/lumen-framework": "^8.0",
         "laravelista/lumen-vendor-publish": "^8.0",
+        "spatie/laravel-activitylog": "^3.16",
         "thedevsaddam/lumen-route-list": "^2.0"
     },
     "require-dev": {
