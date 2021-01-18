@@ -1,8 +1,9 @@
 <?php
 
+use Carbon\Carbon;
 use Dusterio\LumenPassport\LumenPassport;
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 (new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
     dirname(__DIR__)
@@ -80,8 +81,8 @@ $app->configure('auth');
 // ]);
 
 $app->routeMiddleware([
-     'auth' => App\Http\Middleware\Authenticate::class,
- ]);
+    'auth' => App\Http\Middleware\Authenticate::class,
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -99,6 +100,7 @@ $app->routeMiddleware([
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Laravel\Passport\PassportServiceProvider::class);
 $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
+$app->register(\Thedevsaddam\LumenRouteList\LumenRouteListServiceProvider::class);
 
 LumenPassport::tokensExpireIn(Carbon::now()->addYears(1));
 
@@ -116,7 +118,7 @@ LumenPassport::tokensExpireIn(Carbon::now()->addYears(1));
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {
-    require __DIR__.'/../routes/web.php';
+    require __DIR__ . '/../routes/web.php';
 });
 
 LumenPassport::routes($app);
