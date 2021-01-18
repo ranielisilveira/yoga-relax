@@ -12,8 +12,7 @@ class Kernel extends ConsoleKernel
      *
      * @var array
      */
-    protected $commands = [
-        //
+    protected $commands = [\Laravelista\LumenVendorPublish\VendorPublishCommand::class
     ];
 
     /**
