@@ -66,6 +66,7 @@ $app->configure('app');
 $app->configure('auth');
 $app->configure('cors');
 $app->configure('activitylog');
+$app->configure('logging');
 
 /*
 |--------------------------------------------------------------------------
@@ -102,6 +103,7 @@ $app->register(Laravel\Passport\PassportServiceProvider::class);
 $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
 $app->register(\Thedevsaddam\LumenRouteList\LumenRouteListServiceProvider::class);
 $app->register(Fruitcake\Cors\CorsServiceProvider::class);
+$app->register(\danielme85\LaravelLogToDB\ServiceProvider::class);
 
 LumenPassport::tokensExpireIn(Carbon::now()->addYears(1));
 

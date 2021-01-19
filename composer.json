@@ -6,6 +6,7 @@
     "type": "project",
     "require": {
         "php": "^7.3|^8.0",
+        "danielme85/laravel-log-to-db": "^2.4",
         "doctrine/dbal": "^3.0",
         "dusterio/lumen-passport": "^0.3.2",
         "flipbox/lumen-generator": "^8.2",
