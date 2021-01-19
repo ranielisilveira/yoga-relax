@@ -106,6 +106,7 @@ $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
 $app->register(\Thedevsaddam\LumenRouteList\LumenRouteListServiceProvider::class);
 $app->register(Fruitcake\Cors\CorsServiceProvider::class);
 $app->register(\danielme85\LaravelLogToDB\ServiceProvider::class);
+$app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 
 LumenPassport::tokensExpireIn(Carbon::now()->addYears(1));
 
