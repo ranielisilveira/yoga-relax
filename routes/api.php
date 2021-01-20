@@ -15,3 +15,10 @@
 
 $router->post('/register', 'RegisterController@register');
 $router->get('/confirm', 'RegisterController@confirm');
+$router->post('/login', 'AuthController@login');
+$router->post('/login/refresh', 'AuthController@refresh');
+
+
+$router->group(['middleware' => 'auth:api'], function ($router) {
+    $router->post('/logout', 'AuthController@logout');
+});

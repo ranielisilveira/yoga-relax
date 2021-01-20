@@ -16,8 +16,6 @@ class RegisterController extends Controller
 {
     public function register(Request $request)
     {
-        User::truncate();
-
         $this->validate($request, [
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',

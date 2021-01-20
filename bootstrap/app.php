@@ -130,7 +130,7 @@ LumenPassport::tokensExpireIn(Carbon::now()->addYears(1));
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {
-    require __DIR__ . '/../routes/web.php';
+    require __DIR__ . '/../routes/api.php';
 });
 
 LumenPassport::routes($app);
