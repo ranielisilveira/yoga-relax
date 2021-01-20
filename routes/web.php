@@ -14,3 +14,4 @@
 */
 
 $router->post('/register', 'RegisterController@register');
+$router->get('/confirm', 'RegisterController@confirm');
