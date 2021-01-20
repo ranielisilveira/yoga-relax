@@ -91,6 +91,7 @@ $app->middleware([
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
+    'localization' => App\Http\Middleware\LocalizationMiddleware::class,
 ]);
 /*
 |--------------------------------------------------------------------------
