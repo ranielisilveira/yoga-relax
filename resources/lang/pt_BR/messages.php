@@ -14,5 +14,12 @@ return [
         'confirm' => 'Sua conta foi confirmada com sucesso.',
         'confirm_error' => 'Seu usuário já foi ativado anteriormente.',
     ],
+    'auth' => [
+        'invalid_data' => 'Dados inválidos.',
+        'invalid_data_try_again' => 'Dados inválidos. Tente novamente.',
+        'unverified_user' => 'Email ainda não verificado, você deve confirmar sua conta para logar.',
+        'passport_error' => 'Problemas no servidor de autenticação (passport). Tente Novamente mais tarde.',
+        'logout_success' => 'Você deslogou com sucesso.'
+    ]
 
 ];

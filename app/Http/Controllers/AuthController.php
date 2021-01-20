@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
@@ -23,11 +22,11 @@ class AuthController extends Controller
             ])->first();
 
             if (!$user) {
-                throw new Exception('Dados inválidos.');
+                throw new Exception(trans('message.auth.invalidad_data'));
             }
 
             if (!$user->is_verified) {
-                throw new Exception('Email ainda não verificado, você deve confirmar sua conta para logar.');
+                throw new Exception(trans('message.auth.unverified_user'));
             }
 
             $req = Request::create('/oauth/token', 'POST', [
@@ -43,29 +42,7 @@ class AuthController extends Controller
             $responseBody = $res->getContent();
             $response = json_decode($responseBody, true);
 
-            if (isset($response['error'])) {
-                if ($response['error'] === 'invalid_client') {
-                    throw new \Exception('Problemas no servidor de autenticação (passport). Tente Novamente mais tarde.');
-                }
-
-                if ($response['error'] === 'invalid_credentials') {
-                    throw new \Exception('Dados Inválidos. Tente Novamente.');
-                }
-
-                if ($response['error'] === 'invalid_request') {
-                    throw new \Exception('Dados Inválidos. Tente Novamente.');
-                }
-
-                if ($response['error'] === 'invalid_grant') {
-                    throw new \Exception('Dados Inválidos. Tente Novamente.');
-                }
-
-                if ($response['error'] === 'unsupported_grant_type') {
-                    throw new \Exception('Dados Inválidos. Tente Novamente.');
-                }
-
-                throw new \Exception($response['error']);
-            }
+            self::passportExceptions($request);
 
             return $response;
         } catch (\Exception $e) {
@@ -88,35 +65,15 @@ class AuthController extends Controller
             $responseBody = $res->getContent();
             $response = json_decode($responseBody, true);
 
-            if (isset($response['error'])) {
-                if ($response['error'] === 'invalid_client') {
-                    throw new \Exception('Problemas no servidor de autenticação (passport). Tente Novamente mais tarde.');
-                }
-
-                if ($response['error'] === 'invalid_credentials') {
-                    throw new \Exception('Dados Inválidos. Tente Novamente.');
-                }
-
-                if ($response['error'] === 'invalid_request') {
-                    throw new \Exception('Dados Inválidos. Tente Novamente.');
-                }
-
-                if ($response['error'] === 'invalid_grant') {
-                    throw new \Exception('Dados Inválidos. Tente Novamente.');
-                }
-
-                if ($response['error'] === 'unsupported_grant_type') {
-                    throw new \Exception('Dados Inválidos. Tente Novamente.');
-                }
-
-                throw new \Exception($response['error']);
-            }
+            self::passportExceptions($request);
 
             return $response;
         } catch (\Exception $e) {
             return response(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
+
+
     public function logout(Request $request)
     {
         try {
@@ -127,10 +84,35 @@ class AuthController extends Controller
             });
 
             return response([
-                'message' => 'Você deslogou com sucesso.'
+                'message' => trans('messages.auth.logout_success')
             ]);
         } catch (\Exception $e) {
             return response(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    private static function passportExceptions($response)
+    {
+        try {
+            if (isset($response['error'])) {
+                if ($response['error'] === 'invalid_client') {
+                    throw new \Exception(trans('messages.auth.passport_error'));
+                }
+
+                if (
+                    $response['error'] === 'invalid_credentials' ||
+                    $response['error'] === 'invalid_request' ||
+                    $response['error'] === 'invalid_grant' ||
+                    $response['error'] === 'unsupported_grant_type'
+                ) {
+                    throw new \Exception(trans('messages.auth.invalid_data_try_again'));
+                }
+
+
+                throw new \Exception($response['error']);
+            }
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
         }
     }
 }
