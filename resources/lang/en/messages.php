@@ -27,6 +27,7 @@ return [
     'user_reset_password' => [
         'success' => 'Your password has been created.',
         'mail_token_invalid' => 'The mail token submitted is invalid.'
-    ]
+    ],
+    'unauthorized' => 'Access Unauthorized'
 
 ];
