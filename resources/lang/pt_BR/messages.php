@@ -20,6 +20,13 @@ return [
         'unverified_user' => 'Email ainda não verificado, você deve confirmar sua conta para logar.',
         'passport_error' => 'Problemas no servidor de autenticação (passport). Tente Novamente mais tarde.',
         'logout_success' => 'Você deslogou com sucesso.'
+    ],
+    'user_forgot_password' => [
+        'success' => 'Foi enviado um email de recuperação.',
+    ],
+    'user_reset_password' => [
+        'success' => 'Sua senha foi criada com sucesso.',
+        'mail_token_invalid' => 'O token enviado é inválido.'
     ]
 
 ];

@@ -17,6 +17,8 @@ $router->post('/register', 'RegisterController@register');
 $router->get('/confirm', 'RegisterController@confirm');
 $router->post('/login', 'AuthController@login');
 $router->post('/login/refresh', 'AuthController@refresh');
+$router->post('/forgot-password', 'AuthController@forgotPassword');
+$router->post('/reset-password', 'AuthController@resetPassword');
 
 
 $router->group(['middleware' => 'auth:api'], function ($router) {

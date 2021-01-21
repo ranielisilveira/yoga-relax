@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserForgotPassword;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
@@ -22,11 +25,11 @@ class AuthController extends Controller
             ])->first();
 
             if (!$user) {
-                throw new Exception(trans('message.auth.invalidad_data'));
+                throw new Exception(trans('messages.auth.invalidad_data'));
             }
 
             if (!$user->is_verified) {
-                throw new Exception(trans('message.auth.unverified_user'));
+                throw new Exception(trans('messages.auth.unverified_user'));
             }
 
             $req = Request::create('/oauth/token', 'POST', [
@@ -86,6 +89,74 @@ class AuthController extends Controller
             return response([
                 'message' => trans('messages.auth.logout_success')
             ]);
+        } catch (\Exception $e) {
+            return response(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $this->validate($request, [
+            'email' => 'required|email',
+        ]);
+
+        try {
+            $user = User::where([
+                'email' => $request->email
+            ])->first();
+
+            if (!$user) {
+                throw new Exception(trans('messages.auth.invalid_data'));
+            }
+
+            if (!$user->is_verified) {
+                throw new Exception(trans('messages.auth.unverified_user'));
+            }
+
+            $user->mail_token = Uuid::uuid4()->toString();
+            $user->save();
+
+            app()->setLocale($user->language);
+
+            $url = env('APP_URL') . '/reset-password?mail_token=' . $user->mail_token;
+
+            event(new UserForgotPassword($url, $user));
+
+            return response([
+                'message' => trans('messages.user_forgot_password.success')
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $this->validate($request, [
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed',
+            'mail_token' => 'required|min:36'
+        ], [
+            'mail_token.min' => trans('messages.user_reset_password.mail_token_invalid')
+        ]);
+
+        try {
+            $user = User::where([
+                'email' => $request->email,
+                'mail_token' => $request->mail_token
+            ])->first();
+
+            if (!$user) {
+                throw new Exception(trans('messages.auth.invalid_data'));
+            }
+
+            $user->mail_token = null;
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            return response([
+                'message' => trans('messages.user_reset_password.success')
+            ], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
