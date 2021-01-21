@@ -28,6 +28,9 @@ return [
         'success' => 'Your password has been created.',
         'mail_token_invalid' => 'The mail token submitted is invalid.'
     ],
-    'unauthorized' => 'Access Unauthorized'
+    'unauthorized' => 'Access Unauthorized',
+    'created_success' => 'Successfully created.',
+    'updated_success' => 'Successfully updated.',
+    'deleted_success' => 'Successfully deleted.',
 
 ];

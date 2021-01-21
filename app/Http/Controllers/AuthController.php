@@ -25,7 +25,7 @@ class AuthController extends Controller
             ])->first();
 
             if (!$user) {
-                throw new Exception(trans('messages.auth.invalidad_data'));
+                throw new Exception(trans('messages.auth.invalid_data'));
             }
 
             if (!$user->is_verified) {
