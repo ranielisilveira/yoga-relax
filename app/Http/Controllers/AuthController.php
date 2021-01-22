@@ -118,7 +118,7 @@ class AuthController extends Controller
 
             app()->setLocale($user->language);
 
-            $url = env('APP_URL') . '/reset-password?mail_token=' . $user->mail_token;
+            $url = env('APP_FRONT') . '/reset-password?mail_token=' . $user->mail_token;
 
             event(new UserForgotPassword($url, $user));
 
