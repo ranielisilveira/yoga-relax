@@ -29,6 +29,7 @@ class SendUserConfirmationMail implements ShouldQueue
      */
     public function handle(UserRegistered $event)
     {
+        app()->setLocale($event->user->language);
         Mail::to($event->user->email)->send(
             new UserConfirmationMail($event->url, $event->user)
         );

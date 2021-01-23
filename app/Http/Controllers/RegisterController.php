@@ -16,23 +16,24 @@ class RegisterController extends Controller
 {
     public function register(Request $request)
     {
+        $system_languages = explode(",", env("LANGUAGES"));
+        $default_language = env("DEFAULT_LANG");
+        $language = $request->language && in_array($request->language, $system_languages) ? $request->language : $default_language;
+        app()->setLocale($language);
+
         $this->validate($request, [
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
         ]);
 
         try {
-            $system_languages = explode(",", env("LANGUAGES"));
-            $default_language = env("DEFAULT_LANG");
-
             $user = User::create([
+                'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'mail_token' => Uuid::uuid4()->toString(),
-                'language' => $request->language && in_array($request->language, $system_languages) ? $request->language : $default_language
+                'language' => $language
             ]);
-
-            $this->setLanguage($user);
 
             $url = env('APP_URL') . '/confirm?key=' . $user->mail_token;
 
@@ -70,7 +71,9 @@ class RegisterController extends Controller
             $user->is_verified = true;
             $user->save();
 
-            return redirect(env('APP_FRONT') . '?confirm=sucess');
+            $prefix = $user->language == 'pt' ? '' : $user->language;
+
+            return redirect(env('APP_FRONT') . $prefix . '?confirm=success');
         } catch (Exception $e) {
             return response([
                 'message' => $e->getMessage()
@@ -81,7 +84,7 @@ class RegisterController extends Controller
     private function setLanguage($user)
     {
         try {
-            app('translator')->setLocale($user->language ?? env('DEFAULT_LANG'));
+            app()->setLocale($user->language ?? env('DEFAULT_LANG'));
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }

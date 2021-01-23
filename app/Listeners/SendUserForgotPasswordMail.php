@@ -29,6 +29,7 @@ class SendUserForgotPasswordMail implements ShouldQueue
      */
     public function handle(UserForgotPassword $event)
     {
+        app()->setLocale($event->user->language);
         Mail::to($event->user->email)->send(
             new UserForgotPasswordMail($event->url, $event->user)
         );

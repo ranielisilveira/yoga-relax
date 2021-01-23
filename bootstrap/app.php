@@ -30,7 +30,8 @@ $app->withFacades();
 
 $app->withEloquent();
 
-app('translator')->setLocale('pt_BR');
+app()->setLocale('pt');
+
 
 /*
 |--------------------------------------------------------------------------
