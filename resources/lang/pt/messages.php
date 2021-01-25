@@ -32,5 +32,6 @@ return [
     'created_success' => 'Criado com Sucesso.',
     'updated_success' => 'Atualizado com Sucesso.',
     'deleted_success' => 'Excluído com Sucesso.',
+    'restore_success' => 'Restaurado com Sucesso.',
 
 ];

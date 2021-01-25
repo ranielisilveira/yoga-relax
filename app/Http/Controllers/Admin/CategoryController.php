@@ -20,11 +20,20 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        return Category::with([
-            'category',
-            'categories'
-        ])
-            ->orderBy('name')->paginate((int)($request->length ?? 10));
+        $categories = Category::withTrashed()
+            ->with([
+                'category',
+                'categories'
+            ])
+            ->withCount('categories')
+            ->orderBy('deleted_at')
+            ->orderBy('name');
+
+        if ($request->search) {
+            $categories->where('name', 'LIKE', "%{$request->search}%");
+        }
+
+        return $categories->paginate((int)($request->length ?? 10));
     }
 
     /**
@@ -106,7 +115,8 @@ class CategoryController extends Controller
             $category->update($request->all());
 
             return response([
-                'message' => trans('messages.updated_success')
+                'message' => trans('messages.updated_success'),
+                'categories' => $this->index(new Request),
             ], Response::HTTP_OK);
         } catch (Exception $e) {
             return response([
@@ -134,12 +144,67 @@ class CategoryController extends Controller
             $category->delete();
 
             return response([
-                'message' => trans('messages.deleted_success')
+                'message' => trans('messages.deleted_success'),
+                'categories' => $this->index(new Request),
             ], Response::HTTP_OK);
         } catch (Exception $e) {
             return response([
                 'message' => $e->getMessage()
             ], Response::HTTP_BAD_REQUEST);
         }
+    }
+
+    /**
+     * Restore the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function restore($id)
+    {
+        try {
+
+            $category = Category::withTrashed()->findOrFail($id);
+            $category->restore();
+
+            return response([
+                'message' => trans('messages.restore_success'),
+                'categories' => $this->index(new Request),
+            ], Response::HTTP_OK);
+        } catch (Exception $e) {
+            return response([
+                'message' => $e->getMessage()
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function colors()
+    {
+        $enumColors = EnumColors::COLORS_ARRAY;
+        $colors = [];
+
+        foreach ($enumColors as $color) {
+            $colors[] = [
+                'value' => $color,
+                'text' => $color,
+            ];
+        }
+
+        return $colors;
+    }
+
+    public function arrayList()
+    {
+        $DBcategories = Category::orderBy('name')->get();
+        $categories = [];
+
+        foreach ($DBcategories as $category) {
+            $categories[] = [
+                'value' => $category->id,
+                'text' => $category->name->{auth()->user()->language},
+            ];
+        }
+
+        return $categories;
     }
 }

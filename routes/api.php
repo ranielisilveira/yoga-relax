@@ -28,11 +28,15 @@ $router->group(['middleware' => 'auth:api'], function ($router) {
         $router->group(['middleware' => 'admin', 'namespace' => 'Admin', 'prefix' => 'admin'], function ($router) {
 
             $router->group(['prefix' => 'categories'], function ($router) {
+                $router->get('/colors', 'CategoryController@colors');
+                $router->get('/array', 'CategoryController@arrayList');
+
                 $router->get('/', 'CategoryController@index');
                 $router->post('/', 'CategoryController@store');
                 $router->get('/{id}', 'CategoryController@show');
                 $router->put('/{id}', 'CategoryController@update');
                 $router->delete('/{id}', 'CategoryController@destroy');
+                $router->patch('/{id}', 'CategoryController@restore');
             });
         });
 

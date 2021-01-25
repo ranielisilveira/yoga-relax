@@ -3,14 +3,25 @@
 namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
+
 {
+    use SoftDeletes;
+
     public $fillable = [
         'name',
         'color',
         'category_id'
     ];
+
+    //Accessors
+    public function getNameAttribute()
+    {
+        return json_decode($this->attributes['name']);
+    }
+
 
     //Relations
     public function category()

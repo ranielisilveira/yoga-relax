@@ -32,5 +32,6 @@ return [
     'created_success' => 'Successfully created.',
     'updated_success' => 'Successfully updated.',
     'deleted_success' => 'Successfully deleted.',
+    'restore_success' => 'Successfully restored.',
 
 ];
