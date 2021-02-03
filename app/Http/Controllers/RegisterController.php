@@ -49,6 +49,10 @@ class RegisterController extends Controller
                 'language' => $language
             ]);
 
+            $code->is_taken = true;
+            $code->user_id = $user->id;
+            $code->save();
+
             $url = env('APP_URL') . '/confirm?key=' . $user->mail_token;
 
             Mail::to($user->email)->send(

@@ -14,6 +14,7 @@
         "illuminate/mail": "^8.23",
         "laravel/lumen-framework": "^8.0",
         "laravelista/lumen-vendor-publish": "^8.0",
+        "league/csv": "^9.6",
         "spatie/laravel-activitylog": "^3.16",
         "thedevsaddam/lumen-route-list": "^2.0"
     },

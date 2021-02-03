@@ -7,6 +7,10 @@ use App\Models\Admin\RedeemCode;
 use Exception;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use League\Csv\Reader;
+use League\Csv\Statement;
+use SplFileObject;
+
 
 class RedeemCodeController extends Controller
 {
@@ -41,6 +45,35 @@ class RedeemCodeController extends Controller
         try {
 
             RedeemCode::create($request->all());
+
+            return response([
+                'message' => trans('messages.created_success')
+            ], Response::HTTP_OK);
+        } catch (Exception $e) {
+            return response([
+                'message' => $e->getMessage()
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function import(Request $request)
+    {
+        $this->validate($request, [
+            'file' => 'required|file:csv',
+        ], []);
+
+        try {
+
+            $csv = Reader::createFromPath($request->file('file')->getPathName());
+            $csv->setDelimiter(',');
+            $stmt = Statement::create()->offset(0);
+
+            $records = $stmt->process($csv);
+            foreach ($records as $record) {
+                RedeemCode::firstOrCreate([
+                    'code' => $record[0]
+                ]);
+            }
 
             return response([
                 'message' => trans('messages.created_success')
