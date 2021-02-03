@@ -2,6 +2,9 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
+use App\Models\Admin\Category;
+
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -24,6 +27,11 @@ $router->post('/reset-password', 'AuthController@resetPassword');
 $router->group(['middleware' => 'auth:api'], function ($router) {
     $router->group(['middleware' => 'localization'], function ($router) {
 
+        $router->group(['prefix' => 'menu'], function ($router) {
+            $router->get('/top', 'MenuController@topMenu');
+            $router->get('/categories/{id}', 'MenuController@categories');
+            $router->get('/category/{id}', 'MenuController@category');
+        });
 
         $router->group(['middleware' => 'admin', 'namespace' => 'Admin', 'prefix' => 'admin'], function ($router) {
 
@@ -62,8 +70,10 @@ $router->group(['middleware' => 'auth:api'], function ($router) {
 
         $router->post('/logout', 'AuthController@logout');
         $router->get('/me', function () {
+            $user = auth()->user();
+            $user['category_home'] = Category::whereHas('categories')->first()->id ?? 1;
             return [
-                'user' => auth()->user()
+                'user' => $user()
             ];
         });
     });

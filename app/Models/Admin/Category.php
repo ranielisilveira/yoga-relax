@@ -2,6 +2,7 @@
 
 namespace App\Models\Admin;
 
+use App\Models\Media;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -32,5 +33,10 @@ class Category extends Model
     public function categories()
     {
         return $this->hasMany(Category::class, 'category_id');
+    }
+
+    public function medias()
+    {
+        return $this->hasMany(Media::class, 'category_id');
     }
 }
