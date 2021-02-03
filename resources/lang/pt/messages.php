@@ -19,7 +19,8 @@ return [
         'invalid_data_try_again' => 'Dados inválidos. Tente novamente.',
         'unverified_user' => 'Email ainda não verificado, você deve confirmar sua conta para logar.',
         'passport_error' => 'Problemas no servidor de autenticação (passport). Tente Novamente mais tarde.',
-        'logout_success' => 'Você deslogou com sucesso.'
+        'logout_success' => 'Você deslogou com sucesso.',
+        'invalid_code' => 'O código de resgate é inválido ou já foi usado.',
     ],
     'user_forgot_password' => [
         'success' => 'Foi enviado um email de recuperação.',

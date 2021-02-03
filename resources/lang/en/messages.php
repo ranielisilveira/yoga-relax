@@ -19,7 +19,8 @@ return [
         'invalid_data_try_again' => 'Invalid data. Try again',
         'unverified_user' => 'Email not yet verified, you must confirm your account to login.',
         'passport_error' => 'Problems with the authentication server (passport). Try again later.',
-        'logout_success' => 'You have successfully logout'
+        'logout_success' => 'You have successfully logout',
+        'invalid_code' => 'The Redeem Code is invalid or already been taken.',
     ],
     'user_forgot_password' => [
         'success' => 'A recovery email has been sent.',

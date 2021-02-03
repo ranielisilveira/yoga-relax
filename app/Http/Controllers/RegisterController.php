@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\UserRegistered;
+use App\Models\Admin\RedeemCode;
 use App\Mail\UserConfirmationMail;
 use App\Models\User;
 use Exception;
@@ -23,10 +24,23 @@ class RegisterController extends Controller
 
         $this->validate($request, [
             'email' => 'required|email|unique:users,email',
+            'code' => 'required|exists:redeem_codes,code',
             'password' => 'required|min:6|confirmed',
+        ], [
+            'code.required' => trans('messages.auth.invalid_code'),
+            'code.exists' => trans('messages.auth.invalid_code'),
         ]);
 
         try {
+            $code = RedeemCode::where([
+                'is_taken' => false,
+                'code' => $request->code,
+            ])->first();
+
+            if (!$code) {
+                throw new Exception(trans('messages.auth.invalid_code'));
+            }
+
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
