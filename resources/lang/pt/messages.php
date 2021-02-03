@@ -33,5 +33,6 @@ return [
     'updated_success' => 'Atualizado com Sucesso.',
     'deleted_success' => 'Excluído com Sucesso.',
     'restore_success' => 'Restaurado com Sucesso.',
+    'category_delete_not_allowed' => "Não é possível excluir, existem categorias relacionadas a este item.",
 
 ];

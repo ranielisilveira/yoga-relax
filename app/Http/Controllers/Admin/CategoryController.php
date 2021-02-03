@@ -138,7 +138,7 @@ class CategoryController extends Controller
             $category = Category::findOrFail($id);
 
             if ($category->categories->count()) {
-                throw new Exception("Não é possível excluir, existem categorias filhas relacionadas a este item.");
+                throw new Exception(trans('messages.category_delete_not_allowed'));
             }
 
             $category->delete();
