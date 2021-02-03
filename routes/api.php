@@ -38,6 +38,14 @@ $router->group(['middleware' => 'auth:api'], function ($router) {
                 $router->delete('/{id}', 'CategoryController@destroy');
                 $router->patch('/{id}', 'CategoryController@restore');
             });
+
+                $router->group(['prefix' => 'redeem-codes'], function ($router) {
+                $router->get('/', 'RedeemCodeController@index');
+                $router->post('/', 'RedeemCodeController@store');
+                $router->get('/{id}', 'RedeemCodeController@show');
+                $router->put('/{id}', 'RedeemCodeController@update');
+                $router->delete('/{id}', 'RedeemCodeController@destroy');
+            });
         });
 
         $router->post('/logout', 'AuthController@logout');

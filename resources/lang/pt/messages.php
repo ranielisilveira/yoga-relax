@@ -34,5 +34,5 @@ return [
     'deleted_success' => 'Excluído com Sucesso.',
     'restore_success' => 'Restaurado com Sucesso.',
     'category_delete_not_allowed' => "Não é possível excluir, existem categorias relacionadas a este item.",
-
+    'redeem_code_delete_not_allowed' => "Não é possível excluir, existe um usuário relacionado a este item.",
 ];

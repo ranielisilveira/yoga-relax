@@ -34,5 +34,5 @@ return [
     'deleted_success' => 'Successfully deleted.',
     'restore_success' => 'Successfully restored.',
     'category_delete_not_allowed' => "It is not possible to exclude, there are categories related to this item.",
-
+    'redeem_code_delete_not_allowed' => "It is not possible to delete, there is a user related to this item.",
 ];
