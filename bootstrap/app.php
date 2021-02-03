@@ -71,6 +71,7 @@ $app->configure('cors');
 $app->configure('activitylog');
 $app->configure('logging');
 $app->configure('mail');
+$app->configure('filesystems');
 
 $app->alias('mailer', Illuminate\Mail\Mailer::class);
 $app->alias('mailer', Illuminate\Contracts\Mail\Mailer::class);

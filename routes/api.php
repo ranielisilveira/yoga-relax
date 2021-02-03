@@ -42,7 +42,7 @@ $router->group(['middleware' => 'auth:api'], function ($router) {
                 $router->get('/', 'CategoryController@index');
                 $router->post('/', 'CategoryController@store');
                 $router->get('/{id}', 'CategoryController@show');
-                $router->put('/{id}', 'CategoryController@update');
+                $router->post('/{id}', 'CategoryController@update');
                 $router->delete('/{id}', 'CategoryController@destroy');
                 $router->patch('/{id}', 'CategoryController@restore');
             });
@@ -66,7 +66,7 @@ $router->group(['middleware' => 'auth:api'], function ($router) {
                 $router->delete('/{id}', 'MediaController@destroy');
                 $router->patch('/{id}', 'MediaController@restore');
             });
-            
+
             $router->group(['prefix' => 'users'], function ($router) {
                 $router->get('/', 'UserController@index');
             });

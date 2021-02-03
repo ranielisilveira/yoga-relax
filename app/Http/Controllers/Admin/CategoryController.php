@@ -47,6 +47,7 @@ class CategoryController extends Controller
         $this->validate($request, [
             'category_id' => 'nullable|exists:categories,id',
             'name' => 'required|json|unique:categories,name',
+            'file' => 'nullable|file|mimes:png,jpeg,jpg,gif',
             'color' => [
                 'required',
                 Rule::in(EnumColors::COLORS_ARRAY)
@@ -56,6 +57,10 @@ class CategoryController extends Controller
         try {
 
             ValidateJsonLangKey::validate($request->name);
+
+            if ($request->hasFile('file')) {
+                $request['image'] = $request->file('file')->storePublicly('categories');
+            }
 
             Category::create($request->all());
 
@@ -101,6 +106,7 @@ class CategoryController extends Controller
         $this->validate($request, [
             'category_id' => 'nullable|exists:categories,id',
             'name' => 'required|json|unique:categories,name,' . $id . ',id',
+            'file' => 'nullable|file|mimes:png,jpeg,jpg,gif',
             'color' => [
                 'required',
                 Rule::in(EnumColors::COLORS_ARRAY)
@@ -110,6 +116,10 @@ class CategoryController extends Controller
         try {
 
             ValidateJsonLangKey::validate($request->name);
+
+            if ($request->hasFile('file')) {
+                $request['image'] = $request->file('file')->store('categories');
+            }
 
             $category = Category::findOrFail($id);
             $category->update($request->all());

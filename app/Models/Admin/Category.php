@@ -5,6 +5,7 @@ namespace App\Models\Admin;
 use App\Models\Media;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Category extends Model
 
@@ -13,6 +14,7 @@ class Category extends Model
 
     public $fillable = [
         'name',
+        'image',
         'color',
         'category_id'
     ];
@@ -23,6 +25,12 @@ class Category extends Model
         return json_decode($this->attributes['name']);
     }
 
+    public function getImageAttribute()
+    {
+        return $this->attributes['image']
+            ? Storage::url($this->attributes['image'])
+            : null;
+    }
 
     //Relations
     public function category()

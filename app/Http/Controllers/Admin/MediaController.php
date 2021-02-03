@@ -51,7 +51,7 @@ class MediaController extends Controller
         ], []);
 
         if ($request->type == EnumMediaTypes::PDF) {
-            $this->validate($request, ['media' => 'required|file|mime_types:pdf,doc,jpeg,png']);
+            $this->validate($request, ['media' => 'required|file|mimes:pdf,doc,jpeg,png']);
         }
 
         if ($request->type == EnumMediaTypes::VIDEO || $request->type == EnumMediaTypes::TEXT) {
@@ -121,7 +121,7 @@ class MediaController extends Controller
         ], []);
 
         if ($request->type == EnumMediaTypes::PDF) {
-            $this->validate($request, ['media' => 'required|file|mime_types:pdf,doc,jpeg,png']);
+            $this->validate($request, ['media' => 'required|file|mimes:pdf,doc,jpeg,png']);
         }
 
         if ($request->type == EnumMediaTypes::VIDEO || $request->type == EnumMediaTypes::TEXT) {
