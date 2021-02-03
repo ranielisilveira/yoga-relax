@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Admin\RedeemCode;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -37,4 +38,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password',
     ];
+    public function code()
+    {
+        return $this->hasOne(RedeemCode::class, 'user_id');
+    }
 }

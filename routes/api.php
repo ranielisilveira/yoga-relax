@@ -66,6 +66,10 @@ $router->group(['middleware' => 'auth:api'], function ($router) {
                 $router->delete('/{id}', 'MediaController@destroy');
                 $router->patch('/{id}', 'MediaController@restore');
             });
+            
+            $router->group(['prefix' => 'users'], function ($router) {
+                $router->get('/', 'UserController@index');
+            });
         });
 
         $router->post('/logout', 'AuthController@logout');
