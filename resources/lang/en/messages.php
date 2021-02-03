@@ -21,6 +21,8 @@ return [
         'passport_error' => 'Problems with the authentication server (passport). Try again later.',
         'logout_success' => 'You have successfully logout',
         'invalid_code' => 'The Redeem Code is invalid or already been taken.',
+        'current_password_not_match' => 'The current password entered is invalid.',
+        'password_same_as_current' => 'The password entered cannot be the same as the previous one',
     ],
     'user_forgot_password' => [
         'success' => 'A recovery email has been sent.',
@@ -36,4 +38,6 @@ return [
     'restore_success' => 'Successfully restored.',
     'category_delete_not_allowed' => "It is not possible to exclude, there are categories related to this item.",
     'redeem_code_delete_not_allowed' => "It is not possible to delete, there is a user related to this item.",
+    'language_not_accepted' => 'Language not allowed in the system.',
+    'language_required' => 'Mandatory language in the system not informed:',
 ];

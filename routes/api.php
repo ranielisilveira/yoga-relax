@@ -76,5 +76,7 @@ $router->group(['middleware' => 'auth:api'], function ($router) {
                 'user' => $user()
             ];
         });
+        $router->post('/profile/update', 'ProfileController@update');
+        $router->post('/profile/update-password', 'ProfileController@updatePassword');
     });
 });

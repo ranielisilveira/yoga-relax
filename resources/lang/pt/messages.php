@@ -21,6 +21,8 @@ return [
         'passport_error' => 'Problemas no servidor de autenticação (passport). Tente Novamente mais tarde.',
         'logout_success' => 'Você deslogou com sucesso.',
         'invalid_code' => 'O código de resgate é inválido ou já foi usado.',
+        'current_password_not_match' => 'A senha atual informada é inválida.',
+        'password_same_as_current' => 'A senha informada não pode ser igual a anterior.',
     ],
     'user_forgot_password' => [
         'success' => 'Foi enviado um email de recuperação.',
@@ -36,4 +38,6 @@ return [
     'restore_success' => 'Restaurado com Sucesso.',
     'category_delete_not_allowed' => "Não é possível excluir, existem categorias relacionadas a este item.",
     'redeem_code_delete_not_allowed' => "Não é possível excluir, existe um usuário relacionado a este item.",
+    'language_not_accepted' => 'Linguagem não permitida no sistema.',
+    'language_required' => 'Linguagem obrigatória no sistema não informada:',
 ];
