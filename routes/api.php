@@ -39,12 +39,23 @@ $router->group(['middleware' => 'auth:api'], function ($router) {
                 $router->patch('/{id}', 'CategoryController@restore');
             });
 
-                $router->group(['prefix' => 'redeem-codes'], function ($router) {
+            $router->group(['prefix' => 'redeem-codes'], function ($router) {
                 $router->get('/', 'RedeemCodeController@index');
                 $router->post('/', 'RedeemCodeController@store');
                 $router->get('/{id}', 'RedeemCodeController@show');
                 $router->put('/{id}', 'RedeemCodeController@update');
                 $router->delete('/{id}', 'RedeemCodeController@destroy');
+            });
+
+            $router->group(['prefix' => 'media'], function ($router) {
+                $router->get('/types', 'MediaController@types');
+
+                $router->get('/', 'MediaController@index');
+                $router->post('/', 'MediaController@store');
+                $router->get('/{id}', 'MediaController@show');
+                $router->put('/{id}', 'MediaController@update');
+                $router->delete('/{id}', 'MediaController@destroy');
+                $router->patch('/{id}', 'MediaController@restore');
             });
         });
 
