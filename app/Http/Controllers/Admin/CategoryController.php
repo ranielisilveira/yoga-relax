@@ -104,6 +104,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request['category_id'] = $request->category_id == 'null' ?  null : $request->category_id;
         $this->validate($request, [
             'category_id' => 'nullable|exists:categories,id',
             'name' => 'required|json|unique:categories,name,' . $id . ',id',
