@@ -23,9 +23,15 @@ class MediaController extends Controller
         $medias = Media::withTrashed()
             ->with([
                 'category' => function ($category) {
-                    return $category->with('category');
+                    $category->withTrashed()->with([
+                        'category' => function ($parentCategory) {
+                            $parentCategory->withTrashed();
+                        }
+                    ]);
                 }
-            ])->orderBy('deleted_at');
+                ])
+                ->whereHas('category')
+                ->orderBy('deleted_at');
 
         if ($request->search) {
             $medias->where('media', 'LIKE', "%{$request->search}%");

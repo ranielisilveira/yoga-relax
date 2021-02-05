@@ -153,7 +153,11 @@ class CategoryController extends Controller
                 throw new Exception(trans('messages.category_delete_not_allowed'));
             }
 
-            $category->delete();
+            if ($category->medias->count()) {
+                throw new Exception(trans('messages.category_delete_not_allowed'));
+            }
+
+            $category->forceDelete();
 
             return response([
                 'message' => trans('messages.deleted_success'),
