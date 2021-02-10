@@ -20,7 +20,12 @@ class MenuController extends Controller
         return Category::where('id', $id)
             ->with([
                 'categories' => function ($categories) {
-                    return $categories->with(['medias']);
+                    return $categories->with([
+                        'categories' => function($categories){
+                            $categories->with('medias');
+                        },
+                        'medias'
+                    ]);
                 }
             ])
             ->orderBy('name')

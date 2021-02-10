@@ -16,6 +16,7 @@ class Category extends Model
         'name',
         'image',
         'color',
+        'order',
         'category_id'
     ];
 

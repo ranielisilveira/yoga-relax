@@ -9,6 +9,7 @@ use App\Models\Admin\Category;
 use Exception;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class CategoryController extends Controller
@@ -26,8 +27,7 @@ class CategoryController extends Controller
                 'categories'
             ])
             ->withCount('categories')
-            ->orderBy('deleted_at')
-            ->orderBy('name');
+            ->orderBy('order');
 
         if ($request->search) {
             $categories->where('name', 'LIKE', "%{$request->search}%");
@@ -124,6 +124,13 @@ class CategoryController extends Controller
             }
 
             $category = Category::findOrFail($id);
+
+            if ($request->order !== $category->order && $request->order > 0) {
+                $this->sortCategories($category, $request->order);
+            }
+
+            unset($request->order);
+
             $category->update($request->all());
 
             return response([
@@ -211,40 +218,121 @@ class CategoryController extends Controller
 
     public function arrayList()
     {
-        $DBcategories = Category::orderBy('name')->get();
-        $categories = [];
+        $categories = Category::with([
+            'categories' => function($categories){
+                $categories->with('categories');
+            }
+        ])
+            ->orderBy('order')
+            ->get();
 
-        foreach ($DBcategories as $category) {
-            $categories[] = [
+            $return = [];
+
+            foreach ($categories as $category) {
+                $return[] = [
                 'value' => $category->id,
                 'text' => $category->name->{auth()->user()->language},
             ];
+
+            foreach ($category->categories as $category2nd) {
+                $return[] = [
+                    'value' => $category2nd->id,
+                    'text' => $category->name->{auth()->user()->language}
+                              . ' > ' .$category2nd->name->{auth()->user()->language},
+                ];
+            }
         }
 
-        return $categories;
+        return $return;
     }
 
     public function groupedList()
     {
-        $DBcategories = Category::with('category')
-            ->whereHas('category')
-            ->orderBy('name')
-            ->get()
-            ->sortBy('category.name')
-            ->sortBy('name');
-        $categories = [];
+        $categories = Category::with([
+            'categories' => function($categories){
+                $categories->with('categories');
+            }
+        ])
+            ->orderBy('order')
+            ->get();
 
-        foreach ($DBcategories as $category) {
-            $parentCategory = $category->category
-                ? $category->category->name->{auth()->user()->language} . ' > '
-                : '';
+        $return = [];
 
-            $categories[] = [
+        foreach ($categories as $category) {
+            $return[] = [
                 'value' => $category->id,
-                'text' => $parentCategory . $category->name->{auth()->user()->language},
+                'text' => $category->name->{auth()->user()->language},
             ];
+
+            foreach ($category->categories as $category2nd) {
+                $return[] = [
+                    'value' => $category2nd->id,
+                    'text' => $category->name->{auth()->user()->language}
+                              . ' > ' .$category2nd->name->{auth()->user()->language},
+                ];
+
+                foreach ($category2nd->categories as $category3rd) {
+                    $return[] = [
+                        'value' => $category3rd->id,
+                        'text' => $category->name->{auth()->user()->language}
+                                  . ' > ' .$category2nd->name->{auth()->user()->language}
+                                  . ' > ' .$category3rd->name->{auth()->user()->language},
+                    ];
+                }
+            }
         }
 
-        return $categories;
+        return $return;
+    }
+
+    public function updateOrder(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+
+            $category = Category::findOrFail($id);
+
+            if ($request->order !== $category->order && $request->order > 0) {
+                $this->sortCategories($category, $request->order);
+            }
+
+            DB::commit();
+            return response([
+                'message' => 'Ordem da Categoria atualizada com sucesso.'
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response([
+                'message' => $e->getMessage()
+            ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+        private function sortCategories($category, $newOrder)
+        {
+            try {
+                $arr = [$category->order, $newOrder];
+                sort($arr);
+
+                $categories = Category::whereBetween('order', $arr)
+                    ->where('id', '<>', $category->id)
+                    ->get();
+
+                foreach ($categories as $DBcategory) {
+                    if ($DBcategory->order > $category->order) {
+                        $DBcategory->order--;
+                        $DBcategory->save();
+                        continue;
+                    }
+
+                    $DBcategory->order++;
+                    $DBcategory->save();
+                    continue;
+                }
+
+                $category->order = $newOrder;
+                $category->save();
+            } catch (\Exception $e) {
+                throw new Exception($e->getMessage());
+            }
     }
 }

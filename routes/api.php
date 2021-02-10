@@ -36,6 +36,9 @@ $router->group(['middleware' => 'auth:api'], function ($router) {
         $router->group(['middleware' => 'admin', 'namespace' => 'Admin', 'prefix' => 'admin'], function ($router) {
 
             $router->group(['prefix' => 'categories'], function ($router) {
+
+                $router->put('/{id}/sort', 'CategoryController@updateOrder');
+
                 $router->get('/colors', 'CategoryController@colors');
                 $router->get('/array', 'CategoryController@arrayList');
 
