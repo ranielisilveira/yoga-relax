@@ -47,7 +47,7 @@ class CategoryController extends Controller
         $request['category_id'] = $request->category_id == 'null' ?  null : $request->category_id;
         $this->validate($request, [
             'category_id' => 'nullable|exists:categories,id',
-            'name' => 'required|json|unique:categories,name',
+            'name' => 'required|json|',
             'file' => 'nullable|file|mimes:png,jpeg,jpg,gif',
             'color' => [
                 'required',
@@ -63,7 +63,10 @@ class CategoryController extends Controller
                 $request['image'] = $request->file('file')->storePublicly('categories');
             }
 
-            Category::create($request->all());
+            $category = Category::create($request->all());
+            if ($request->order && $request->order > 0) {
+                $this->sortCategories($category, $request->order);
+            }
 
             return response([
                 'message' => trans('messages.created_success')
@@ -107,7 +110,7 @@ class CategoryController extends Controller
         $request['category_id'] = $request->category_id == 'null' ?  null : $request->category_id;
         $this->validate($request, [
             'category_id' => 'nullable|exists:categories,id',
-            'name' => 'required|json|unique:categories,name,' . $id . ',id',
+            'name' => 'required|json|',
             'file' => 'nullable|file|mimes:png,jpeg,jpg,gif',
             'color' => [
                 'required',
