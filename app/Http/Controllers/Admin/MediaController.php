@@ -24,8 +24,12 @@ class MediaController extends Controller
             ->with([
                 'category' => function ($category) {
                     $category->withTrashed()->with([
-                        'category' => function ($parentCategory) {
-                            $parentCategory->withTrashed();
+                        'category' => function ($middleCategory) {
+                            $middleCategory->withTrashed()->with([
+                                'category' => function ($parentCategory) {
+                                    $parentCategory->withTrashed();
+                                }
+                            ]);
                         }
                     ]);
                 }

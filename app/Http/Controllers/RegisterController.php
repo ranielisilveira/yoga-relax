@@ -55,10 +55,6 @@ class RegisterController extends Controller
 
             $url = env('APP_URL') . '/confirm?key=' . $user->mail_token;
 
-            Mail::to($user->email)->send(
-                new UserConfirmationMail($url, $user)
-            );
-
             event(new UserRegistered($url, $user));
 
             return response([

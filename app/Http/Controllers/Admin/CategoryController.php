@@ -27,6 +27,7 @@ class CategoryController extends Controller
                 'categories'
             ])
             ->withCount('categories')
+            ->withCount('medias')
             ->orderBy('order');
 
         if ($request->search) {
@@ -221,29 +222,30 @@ class CategoryController extends Controller
 
     public function arrayList()
     {
-        $categories = Category::with([
-            'categories' => function($categories){
-                $categories->with('categories');
-            }
-        ])
+        $masterCategories = Category::doesnthave('category')
             ->orderBy('order')
             ->get();
 
-            $return = [];
+        $return = [];
 
-            foreach ($categories as $category) {
-                $return[] = [
+        foreach ($masterCategories as $category) {
+            $return[] = [
                 'value' => $category->id,
-                'text' => $category->name->{auth()->user()->language},
+                'text' => $category->name->{auth()->user()->language}
             ];
+        }
 
-            foreach ($category->categories as $category2nd) {
-                $return[] = [
-                    'value' => $category2nd->id,
-                    'text' => $category->name->{auth()->user()->language}
-                              . ' > ' .$category2nd->name->{auth()->user()->language},
-                ];
-            }
+        $categories = Category::whereHas('category', function ($category) {
+            return $category->doesnthave('category');
+        })
+            ->orderBy('order')
+            ->get();
+
+        foreach ($categories as $category) {
+            $return[] = [
+                'value' => $category->id,
+                'text' => $category->category->name->{auth()->user()->language} . ' > ' . $category->name->{auth()->user()->language}
+            ];
         }
 
         return $return;
@@ -252,8 +254,8 @@ class CategoryController extends Controller
     public function groupedList()
     {
         $categories = Category::with([
-            'categories' => function($categories){
-                $categories->with('categories');
+            'category' => function ($category) {
+                $category->with('category');
             }
         ])
             ->orderBy('order')
@@ -262,28 +264,14 @@ class CategoryController extends Controller
         $return = [];
 
         foreach ($categories as $category) {
-            $return[] = [
-                'value' => $category->id,
-                'text' => $category->name->{auth()->user()->language},
-            ];
+            $category3rd = $category->category && $category->category->category ?  $category->category->category->name->{auth()->user()->language} . ' > ' : null;
+            $category2nd = $category->category ?  $category->category->name->{auth()->user()->language} . ' > ' : null;
 
-            foreach ($category->categories as $category2nd) {
                 $return[] = [
-                    'value' => $category2nd->id,
-                    'text' => $category->name->{auth()->user()->language}
-                              . ' > ' .$category2nd->name->{auth()->user()->language},
+                    'value' => $category->id,
+                    'text' => $category3rd . $category2nd . $category->name->{auth()->user()->language}
                 ];
-
-                foreach ($category2nd->categories as $category3rd) {
-                    $return[] = [
-                        'value' => $category3rd->id,
-                        'text' => $category->name->{auth()->user()->language}
-                                  . ' > ' .$category2nd->name->{auth()->user()->language}
-                                  . ' > ' .$category3rd->name->{auth()->user()->language},
-                    ];
-                }
             }
-        }
 
         return $return;
     }
@@ -310,32 +298,32 @@ class CategoryController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
     }
-        private function sortCategories($category, $newOrder)
-        {
-            try {
-                $arr = [$category->order, $newOrder];
-                sort($arr);
+    private function sortCategories($category, $newOrder)
+    {
+        try {
+            $arr = [$category->order, $newOrder];
+            sort($arr);
 
-                $categories = Category::whereBetween('order', $arr)
-                    ->where('id', '<>', $category->id)
-                    ->get();
+            $categories = Category::whereBetween('order', $arr)
+                ->where('id', '<>', $category->id)
+                ->get();
 
-                foreach ($categories as $DBcategory) {
-                    if ($DBcategory->order > $category->order) {
-                        $DBcategory->order--;
-                        $DBcategory->save();
-                        continue;
-                    }
-
-                    $DBcategory->order++;
+            foreach ($categories as $DBcategory) {
+                if ($DBcategory->order > $category->order) {
+                    $DBcategory->order--;
                     $DBcategory->save();
                     continue;
                 }
 
-                $category->order = $newOrder;
-                $category->save();
-            } catch (\Exception $e) {
-                throw new Exception($e->getMessage());
+                $DBcategory->order++;
+                $DBcategory->save();
+                continue;
             }
+
+            $category->order = $newOrder;
+            $category->save();
+        } catch (\Exception $e) {
+            throw new Exception($e->getMessage());
+        }
     }
 }

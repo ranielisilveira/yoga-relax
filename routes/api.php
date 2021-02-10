@@ -80,7 +80,7 @@ $router->group(['middleware' => 'auth:api'], function ($router) {
             $user = auth()->user();
             $user['category_home'] = Category::whereHas('categories')->first()->id ?? 1;
             return [
-                'user' => $user()
+                'user' => $user
             ];
         });
         $router->post('/profile/update', 'ProfileController@update');
