@@ -9,7 +9,7 @@ class MenuController extends Controller
 {
     public function topMenu()
     {
-        return Category::whereHas('categories')
+        return Category::doesnthave('category')
             ->with('categories')
             ->orderBy('name')
             ->get();
