@@ -21,11 +21,11 @@ class MenuController extends Controller
             ->with([
                 'categories' => function ($categories) {
                     return $categories->with([
-                        'categories' => function($categories){
-                            $categories->with('medias');
+                        'categories' => function ($categories) {
+                            $categories->with('medias')->orderBy('order');
                         },
                         'medias'
-                    ]);
+                    ])->orderBy('order');
                 }
             ])
             ->orderBy('order')
