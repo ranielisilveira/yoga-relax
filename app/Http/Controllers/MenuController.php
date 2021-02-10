@@ -11,7 +11,7 @@ class MenuController extends Controller
     {
         return Category::doesnthave('category')
             ->with('categories')
-            ->orderBy('name')
+            ->orderBy('order')
             ->get();
     }
 
@@ -28,7 +28,7 @@ class MenuController extends Controller
                     ]);
                 }
             ])
-            ->orderBy('name')
+            ->orderBy('order')
             ->first();
     }
 
@@ -38,7 +38,7 @@ class MenuController extends Controller
             return $category->where('id', $id);
         })
             ->with('category')
-            ->orderBy('name')
+            ->orderBy('order')
             ->get();
     }
 }
