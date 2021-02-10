@@ -35,11 +35,51 @@
                         ]);
                     }
                 ])
-                ->whereHas('category')
+                ->whereHas('category', function ($category) use ($request) {
+                    if ($request->search) {
+                        $category->where('name', 'LIKE', "%{$request->search}%");
+                    }
+                })
                 ->orderBy('deleted_at');
 
             if ($request->search) {
-                $medias->where('media', 'LIKE', "%{$request->search}%");
+                $medias = Media::withTrashed()
+                    ->with([
+                        'category' => function ($category) {
+                            $category->withTrashed()->with([
+                                'category' => function ($middleCategory) {
+                                    $middleCategory->withTrashed()->with([
+                                        'category' => function ($parentCategory) {
+                                            $parentCategory->withTrashed();
+                                        }
+                                    ]);
+                                }
+                            ]);
+                        }
+                    ]);
+
+                $media1st = (clone $medias)
+                    ->whereHas('category', function ($category) use ($request) {
+                        return $category->where('name', 'LIKE', "%{$request->search}%");
+                    })->orderBy('deleted_at');
+
+                $media2nd = (clone $medias)
+                    ->whereHas('category', function ($category) use ($request) {
+                        return $category->whereHas('category', function ($category2nd) use ($request) {
+                            $category2nd->where('name', 'LIKE', "%{$request->search}%");
+                        });
+                    })->orderBy('deleted_at');
+
+                $media3rd = (clone $medias)
+                    ->whereHas('category', function ($category) use ($request) {
+                        return $category->whereHas('category', function ($category2nd) use ($request) {
+                            return $category2nd->whereHas('category', function ($category3rd) use ($request) {
+                                $category3rd->where('name', 'LIKE', "%{$request->search}%");
+                            });
+                        });
+                    })->orderBy('deleted_at');
+
+                return ['data' => $media1st->get()->merge($media2nd->get())->merge($media3rd->get())];
             }
 
             return $medias->paginate((int)($request->length ?? 10));
