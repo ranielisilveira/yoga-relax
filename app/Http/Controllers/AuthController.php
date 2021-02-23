@@ -25,8 +25,13 @@ class AuthController extends Controller
             ])->first();
 
             if (!$user) {
+                $lang = explode("-", $request->server('HTTP_ACCEPT_LANGUAGE'))[0] ?? 'en';
+                app()->setLocale($lang);
+
                 throw new Exception(trans('messages.auth.invalid_data'));
             }
+
+            app()->setLocale($user->language);
 
             if (!$user->is_verified) {
                 throw new Exception(trans('messages.auth.unverified_user'));
@@ -106,8 +111,13 @@ class AuthController extends Controller
             ])->first();
 
             if (!$user) {
+                $lang = explode("-", $request->server('HTTP_ACCEPT_LANGUAGE'))[0] ?? 'en';
+                app()->setLocale($lang);
+
                 throw new Exception(trans('messages.auth.invalid_data'));
             }
+
+            app()->setLocale($user->language);
 
             if (!$user->is_verified) {
                 throw new Exception(trans('messages.auth.unverified_user'));
@@ -115,8 +125,6 @@ class AuthController extends Controller
 
             $user->mail_token = Uuid::uuid4()->toString();
             $user->save();
-
-            app()->setLocale($user->language);
 
             $url = env('APP_FRONT') . '/reset-password?mail_token=' . $user->mail_token;
 
@@ -147,8 +155,12 @@ class AuthController extends Controller
             ])->first();
 
             if (!$user) {
+                $lang = explode("-", $request->server('HTTP_ACCEPT_LANGUAGE'))[0] ?? 'en';
+                app()->setLocale($lang);
                 throw new Exception(trans('messages.auth.invalid_data'));
             }
+
+            app()->setLocale($user->language);
 
             $user->mail_token = null;
             $user->password = Hash::make($request->password);
@@ -173,6 +185,7 @@ class AuthController extends Controller
                 if (
                     $response['error'] === 'invalid_credentials' ||
                     $response['error'] === 'invalid_request' ||
+                    $response['error'] === 'invalid_data' ||
                     $response['error'] === 'invalid_grant' ||
                     $response['error'] === 'unsupported_grant_type'
                 ) {

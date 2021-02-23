@@ -75,12 +75,13 @@ class RegisterController extends Controller
                 'is_verified' => false
             ])->first();
 
-            $this->setLanguage($user);
-
-
             if (!$user) {
+                $lang = explode("-", $request->server('HTTP_ACCEPT_LANGUAGE'))[0] ?? env('DEFAULT_LANG');
+                app()->setLocale($lang);
                 return redirect(env('APP_FRONT') . '?confirm=already-activated');
             }
+
+            app()->setLocale($user->language);
 
             $user->mail_token = null;
             $user->is_verified = true;
@@ -93,15 +94,6 @@ class RegisterController extends Controller
             return response([
                 'message' => $e->getMessage()
             ], Response::HTTP_BAD_REQUEST);
-        }
-    }
-
-    private function setLanguage($user)
-    {
-        try {
-            app()->setLocale($user->language ?? env('DEFAULT_LANG'));
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
         }
     }
 }
