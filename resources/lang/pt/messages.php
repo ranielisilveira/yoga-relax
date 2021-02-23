@@ -10,7 +10,7 @@ return [
 
     'register' => [
         'error' => 'Houve um erro na tentativa de registro, tente novamente mais tarde.',
-        'success' => 'Sua Conta foi criada com sucesso.',
+        'success' => 'Mais um passo! Para confirmar sua conta, abra o e-mail que acabamos de enviar para você e clique em "confirmar conta"',
         'confirm' => 'Sua conta foi confirmada com sucesso.',
         'confirm_error' => 'Seu usuário já foi ativado anteriormente.',
     ],

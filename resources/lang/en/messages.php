@@ -10,7 +10,7 @@ return [
 
     'register' => [
         'error' => 'There was an error trying to register, please try again later.',
-        'success' => 'Your Account was created successfully.',
+        'success' => 'One more step! To confirm your account, open the email we just sent to you and click "confirm account"',
         'confirm' => 'Your account has been successfully verified.',
         'confirm_error' => 'Your user has been previously activated.',
     ],
