@@ -78,14 +78,14 @@ class RegisterController extends Controller
             $this->setLanguage($user);
 
             if (!$user) {
-                throw new Exception(trans('messages.register.confirm_error'));
+                return redirect(env('APP_FRONT') . '?confirm=already-activated');
             }
 
             $user->mail_token = null;
             $user->is_verified = true;
             $user->save();
 
-            $prefix = $user->language == 'pt' ? '' : $user->language;
+            
 
             return redirect(env('APP_FRONT') . $prefix . '?confirm=success');
         } catch (Exception $e) {

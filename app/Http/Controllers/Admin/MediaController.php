@@ -79,16 +79,16 @@
                         });
                     })->orderBy('deleted_at');
 
-                    $data = $media1st->get()->merge($media2nd->get())->merge($media3rd->get());
-                    return [
-                        "current_page" => 1,
-                        "data" => $data,
-                        "from" => 1,
-                        "per_page" => count($data),
-                        "prev_page_url" => null,
-                        "to" => count($data),
-                        "total" => count($data)
-                    ];
+                $data = $media1st->get()->merge($media2nd->get())->merge($media3rd->get());
+                return [
+                    "current_page" => 1,
+                    "data" => $data,
+                    "from" => 1,
+                    "per_page" => count($data),
+                    "prev_page_url" => null,
+                    "to" => count($data),
+                    "total" => count($data)
+                ];
             }
 
             return $medias->paginate((int)($request->length ?? 10));
