@@ -77,6 +77,7 @@ class RegisterController extends Controller
 
             $this->setLanguage($user);
 
+
             if (!$user) {
                 return redirect(env('APP_FRONT') . '?confirm=already-activated');
             }
@@ -85,7 +86,7 @@ class RegisterController extends Controller
             $user->is_verified = true;
             $user->save();
 
-            
+            $prefix = $user->language == 'pt' ? '' : $user->language;
 
             return redirect(env('APP_FRONT') . $prefix . '?confirm=success');
         } catch (Exception $e) {
